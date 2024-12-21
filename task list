@@ -1,0 +1,134 @@
+import java.util.Scanner;
+
+class Task {
+    private String name;
+    private boolean isCompleted;
+
+    public Task(String name) {
+        this.name = name;
+        this.isCompleted = false;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void markAsCompleted() {
+        isCompleted = true;
+    }
+
+    @Override
+    public String toString() {
+        return (isCompleted ? "[X] " : "[ ] ") + name;
+    }
+}
+
+class TaskManager {
+    private Task[] tasks;
+    private int taskCount;
+
+    public TaskManager(int capacity) {
+        tasks = new Task[capacity];
+        taskCount = 0;
+    }
+
+    public void addTask(String taskName) {
+        if (taskCount < tasks.length) {
+            tasks[taskCount++] = new Task(taskName);
+            System.out.println("Task added.");
+        } else {
+            System.out.println("Task list is full.");
+        }
+    }
+
+    public void markTaskCompleted(int taskNumber) {
+        if (taskNumber >= 1 && taskNumber <= taskCount) {
+            tasks[taskNumber - 1].markAsCompleted();
+            System.out.println("Task marked as completed.");
+        } else {
+            System.out.println("Invalid task number.");
+        }
+    }
+
+    public void listTasks() {
+        if (taskCount == 0) {
+            System.out.println("No tasks available.");
+        } else {
+            for (int i = 0; i < taskCount; i++) {
+                System.out.println((i + 1) + ". " + tasks[i]);
+            }
+        }
+    }
+
+    public void deleteTask(int taskNumber) {
+        if (taskNumber >= 1 && taskNumber <= taskCount) {
+            for (int i = taskNumber - 1; i < taskCount - 1; i++) {
+                tasks[i] = tasks[i + 1];
+            }
+            tasks[--taskCount] = null;
+            System.out.println("Task deleted.");
+        } else {
+            System.out.println("Invalid task number.");
+        }
+    }
+}
+
+public class TaskListApp {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        TaskManager taskManager = new TaskManager(10);
+        boolean running = true;
+
+        while (running) {
+            System.out.println("\nTask List Menu:");
+            System.out.println("1. Add Task");
+            System.out.println("2. List Tasks");
+            System.out.println("3. Mark Task as Completed");
+            System.out.println("4. Delete Task");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Clear the buffer
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter task name: ");
+                    String taskName = scanner.nextLine();
+                    taskManager.addTask(taskName);
+                    break;
+
+                case 2:
+                    System.out.println("\nTask List:");
+                    taskManager.listTasks();
+                    break;
+
+                case 3:
+                    System.out.print("Enter task number to mark as completed: ");
+                    int completeNumber = scanner.nextInt();
+                    taskManager.markTaskCompleted(completeNumber);
+                    break;
+
+                case 4:
+                    System.out.print("Enter task number to delete: ");
+                    int deleteNumber = scanner.nextInt();
+                    taskManager.deleteTask(deleteNumber);
+                    break;
+
+                case 5:
+                    running = false;
+                    System.out.println("Exiting Task List App.");
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+
+        scanner.close();
+    }
+}
