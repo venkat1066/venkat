@@ -1,0 +1,116 @@
+import java.util.Scanner;
+
+class Passenger {
+    private String name;
+    private int seatNumber;
+
+    public Passenger(String name, int seatNumber) {
+        this.name = name;
+        this.seatNumber = seatNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getSeatNumber() {
+        return seatNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Seat " + seatNumber + ": " + name;
+    }
+}
+
+class AirlineReservation {
+    private Passenger[] seats;
+    private int capacity;
+
+    public AirlineReservation(int capacity) {
+        this.capacity = capacity;
+        seats = new Passenger[capacity];
+    }
+
+    public void bookSeat(String name) {
+        for (int i = 0; i < capacity; i++) {
+            if (seats[i] == null) {
+                seats[i] = new Passenger(name, i + 1);
+                System.out.println("Seat booked successfully! Seat Number: " + (i + 1));
+                return;
+            }
+        }
+        System.out.println("No seats available.");
+    }
+
+    public void cancelBooking(int seatNumber) {
+        if (seatNumber > 0 && seatNumber <= capacity && seats[seatNumber - 1] != null) {
+            System.out.println("Booking for " + seats[seatNumber - 1].getName() + " (Seat " + seatNumber + ") has been canceled.");
+            seats[seatNumber - 1] = null;
+        } else {
+            System.out.println("Invalid seat number or no booking exists.");
+        }
+    }
+
+    public void viewBookings() {
+        boolean empty = true;
+        for (int i = 0; i < capacity; i++) {
+            if (seats[i] != null) {
+                System.out.println(seats[i]);
+                empty = false;
+            }
+        }
+        if (empty) {
+            System.out.println("No bookings available.");
+        }
+    }
+}
+
+public class AirlineReservationSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        AirlineReservation reservationSystem = new AirlineReservation(10);
+        boolean running = true;
+
+        while (running) {
+            System.out.println("\nAirline Reservation System:");
+            System.out.println("1. Book a Seat");
+            System.out.println("2. Cancel a Booking");
+            System.out.println("3. View Bookings");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter passenger name: ");
+                    String name = scanner.nextLine();
+                    reservationSystem.bookSeat(name);
+                    break;
+
+                case 2:
+                    System.out.print("Enter seat number to cancel: ");
+                    int seatNumber = scanner.nextInt();
+                    reservationSystem.cancelBooking(seatNumber);
+                    break;
+
+                case 3:
+                    System.out.println("\nCurrent Bookings:");
+                    reservationSystem.viewBookings();
+                    break;
+
+                case 4:
+                    running = false;
+                    System.out.println("Exiting Airline Reservation System.");
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+
+        scanner.close();
+    }
+}
