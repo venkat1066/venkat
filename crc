@@ -1,0 +1,93 @@
+import java.util.Scanner;
+
+public class CRC {
+
+    
+    public static int computeCRC(byte[] data, int polynomial, int initialValue) {
+        int crc = initialValue; // Initialize the CRC value
+
+        for (byte b : data) {
+            crc ^= (b << 8); // XOR the byte into the top of the CRC register
+
+            for (int i = 0; i < 8; i++) { // Process each bit
+                if ((crc & 0x8000) != 0) { // If the top bit is set
+                    crc = (crc << 1) ^ polynomial; // Shift left and XOR with the polynomial
+                } else {
+                    crc = crc << 1; // Just shift left
+                }
+            }
+
+            crc &= 0xFFFF; // Ensure CRC is 16-bit
+        }
+
+        return crc;
+    }
+
+    
+    public static long computeCRC32(byte[] data) {
+        int polynomial = 0x04C11DB7; // Standard CRC-32 polynomial
+        int initialValue = 0xFFFFFFFF;
+        long crc = initialValue;
+
+        for (byte b : data) {
+            crc ^= (b << 24);
+
+            for (int i = 0; i < 8; i++) {
+                if ((crc & 0x80000000L) != 0) {
+                    crc = (crc << 1) ^ polynomial;
+                } else {
+                    crc <<= 1;
+                }
+            }
+        }
+
+        return crc & 0xFFFFFFFFL; // Ensure CRC is 32-bit
+    }
+
+    
+    public static byte[] stringToBytes(String input) {
+        return input.getBytes();
+    }
+
+  
+    public static void displayCRC(String label, int crc) {
+        System.out.printf("%s: 0x%04X%n", label, crc);
+    }
+
+    // Interactive method for CRC computation
+    public static void interactiveMode() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter data to compute CRC:");
+        String input = scanner.nextLine();
+        byte[] data = stringToBytes(input);
+
+        System.out.println("Choose CRC mode:");
+        System.out.println("1. CRC-16 (Default)");
+        System.out.println("2. CRC-32");
+        int choice = scanner.nextInt();
+
+        if (choice == 1) {
+            int polynomial = 0x1021; // CRC-16-CCITT
+            int initialValue = 0xFFFF;
+            int crc16 = computeCRC(data, polynomial, initialValue);
+            displayCRC("CRC-16", crc16);
+        } else if (choice == 2) {
+            long crc32 = computeCRC32(data);
+            System.out.printf("CRC-32: 0x%08X%n", crc32);
+        } else {
+            System.out.println("Invalid choice!");
+        }
+
+        scanner.close();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Cyclic Redundancy Check (CRC) Utility");
+        System.out.println("------------------------------------");
+
+        interactiveMode();
+
+        System.out.println("Thank you for using the CRC Utility!");
+    }
+}
