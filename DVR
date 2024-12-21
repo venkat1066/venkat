@@ -1,0 +1,71 @@
+import java.util.Scanner;
+
+class DVR {
+    private int[][] costMatrix;
+    private int[][] distanceMatrix;
+    private int numNodes;
+
+    public DVR(int numNodes) {
+        this.numNodes = numNodes;
+        costMatrix = new int[numNodes][numNodes];
+        distanceMatrix = new int[numNodes][numNodes];
+    }
+
+    public void initializeCostMatrix() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter the cost matrix (enter 999 for no direct connection):");
+        for (int i = 0; i < numNodes; i++) {
+            for (int j = 0; j < numNodes; j++) {
+                costMatrix[i][j] = scanner.nextInt();
+                if (i == j) {
+                    costMatrix[i][j] = 0; // Distance to itself is zero
+                }
+                distanceMatrix[i][j] = costMatrix[i][j];
+            }
+        }
+    }
+
+    public void calculateShortestPaths() {
+        for (int k = 0; k < numNodes; k++) {
+            for (int i = 0; i < numNodes; i++) {
+                for (int j = 0; j < numNodes; j++) {
+                    if (distanceMatrix[i][j] > distanceMatrix[i][k] + distanceMatrix[k][j]) {
+                        distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j];
+                    }
+                }
+            }
+        }
+    }
+
+    public void displayDistanceMatrix() {
+        System.out.println("\nDistance Matrix:");
+        for (int i = 0; i < numNodes; i++) {
+            for (int j = 0; j < numNodes; j++) {
+                if (distanceMatrix[i][j] == 999) {
+                    System.out.print("INF\t");
+                } else {
+                    System.out.print(distanceMatrix[i][j] + "\t");
+                }
+            }
+            System.out.println();
+        }
+    }
+}
+
+public class DVRMain {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of nodes in the network: ");
+        int numNodes = scanner.nextInt();
+
+        DVR dvr = new DVR(numNodes);
+
+        dvr.initializeCostMatrix();
+        dvr.calculateShortestPaths();
+        dvr.displayDistanceMatrix();
+
+        scanner.close();
+    }
+}
