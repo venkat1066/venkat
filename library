@@ -1,0 +1,88 @@
+import java.util.*;
+
+class Book {
+    private String title;
+    private String author;
+    private boolean isCheckedOut;
+
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.isCheckedOut = false;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public boolean isCheckedOut() {
+        return isCheckedOut;
+    }
+
+    public void checkOut() {
+        this.isCheckedOut = true;
+    }
+
+    public void returnBook() {
+        this.isCheckedOut = false;
+    }
+
+    @Override
+    public String toString() {
+        return title + " by " + author + (isCheckedOut ? " (Checked out)" : " (Available)");
+    }
+}
+
+class Patron {
+    private String name;
+    private List<Book> checkedOutBooks;
+
+    public Patron(String name) {
+        this.name = name;
+        this.checkedOutBooks = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Book> getCheckedOutBooks() {
+        return checkedOutBooks;
+    }
+
+    public void checkOutBook(Book book) {
+        checkedOutBooks.add(book);
+    }
+
+    public void returnBook(Book book) {
+        checkedOutBooks.remove(book);
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + checkedOutBooks.size() + " books checked out)";
+    }
+}
+
+class Library {
+    private List<Book> books;
+    private List<Patron> patrons;
+
+    public Library() {
+        books = new ArrayList<>();
+        patrons = new ArrayList<>();
+    }
+
+    public void addBook(Book book) {
+        books.add(book);
+    }
+
+    public void addPatron(Patron patron) {
+        patrons.add(patron);
+    }
+
+    public Book findBook(
